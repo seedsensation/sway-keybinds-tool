@@ -88,11 +88,9 @@ fn main() {
 
                 }
             },
-            "new" => {
+            "new"|"add" => {
                 let keys = args.get(2).expect("Missing key combination");
-                println!("{}",keys);
                 let exec = args.get(3).expect("Missing command to be executed");
-                println!("{}",exec);
 
                 let release = {
                     if args.get(4).is_some() {
@@ -102,7 +100,6 @@ fn main() {
                         false
                     }
                 };
-                println!("{}",release);
                 if keys.starts_with("+") || keys.len() == 0 {
                     println!("Please surround your key combinations with ''.");
                     return;
@@ -141,29 +138,28 @@ fn main() {
                     keys: keys.to_string(),
                     release: release,
                     execute: exec.to_string()
-                })
+                });
+                println!("Successfully created new keybind for {}.\nReload Sway for them to become active.", keys);
 
 
             },
             "edit" => {
                 
                 let binds_len = binds.len();
-                let mut editable = binds.get_mut(
+                let editable = binds.get_mut(
                     args.get(2).expect("Missing ID for editing")
                         .parse::<usize>().expect("ID should be a number") - 1)
                                     .expect(format!("ID {} out of range ({})",args.get(2).unwrap(), binds_len).as_str());
                 let keys = args.get(3).expect("Missing key combination");
-                println!("{}",keys);
                 let na_text = "n/a".to_string();
                 let exec = args.get(4).unwrap_or(&na_text);
-                println!("{}",exec);
                 let release = args.get(5).unwrap_or(&na_text);
-                println!("{}",exec);
 
                 editable.keys = if keys.to_lowercase() != "n/a" { keys.to_string() } else { editable.keys.clone() };
                 editable.execute = if exec.to_lowercase() != "n/a" { exec.to_string() } else { editable.execute.clone() };
                 editable.release = if release.to_lowercase() != "n/a" { release.parse::<bool>().unwrap_or(false) } else { editable.release };
 
+                println!("Successfully edited keybind {}.\nReload Sway to see your changes.",editable.keys);
 
                 
             },
