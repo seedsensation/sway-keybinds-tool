@@ -18,8 +18,9 @@ This command is used to edit my config files in Sway.
 Usage: keybinds [COMMAND]
 
 - list - List all existing keybinds
+- new <key> <command> <release?> - Create a new keybind
 - edit <id> <key / 'n/a'> <command / 'n/a'> <release?> - Edit an existing keybind
-- new <key> <command> <release?> - Create a new keybind\
+- remove <id> - Remove an existing keybind\
 ".to_string()
 
 }
@@ -163,6 +164,16 @@ fn main() {
 
                 
             },
+            "delete" | "remove" => {
+                let id = args.get(2).expect("Missing ID for removing")
+                    .parse::<usize>().expect("ID should be a number.") - 1;
+                if binds.get(id).is_some() {
+                    binds.remove(id);
+                    println!("Successfully removed keybind.");
+                } else {
+                    println!("ID is not valid.")
+                }
+            }
             _ => println!("{}",help_text()),
         }
     } else {
